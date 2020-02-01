@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  serviceName: jenkins
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      name: jenkins
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: mbasri/jenkins
+        ports:
+        - containerPort: 8080
+        - containerPort: 50000
+        volumeMounts:
+        - name: jenkins
+          mountPath: /var/jenkins_home
+          subPath: var/jenkins_home
+        env:
+        - name: LDAP_ORGANISATION
+          valueFrom:
+            configMapKeyRef:
+              name: jenkins
+              key: ldap_organisation
+
+        - name: LDAP_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jenkins
+              key: ldap_admin_password
+
+  volumeClaimTemplates:
+  - metadata:
+      name: jenkins
+      labels:
+        app: jenkins
+    spec:
+      storageClassName: aws-ebs-gp2
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi

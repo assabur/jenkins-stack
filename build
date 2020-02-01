@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+VERSION=${1:-latest}
+docker login --username=mbasri
+cd docker
+
+for i in "jenkins"
+do
+  REPOSITORY="mbasri/${i}:${VERSION}"
+  if [ "$?" -eq 0 ]; then
+    docker build -t ${REPOSITORY} ${i}
+    docker push ${REPOSITORY}
+    if [ "$?" -eq 0 ]; then
+      VERSION="latest"
+      REPOSITORY_LATEST="mbasri/${i}:${VERSION}"
+      docker tag ${REPOSITORY} ${REPOSITORY_LATEST}
+      docker push ${REPOSITORY_LATEST}
+    fi
+  else
+    echo -n "Login failed, exiting"
+    exit 1
+  fi
+done
