@@ -7,7 +7,7 @@
 
 > * Docker base images:
 >   * Jenkins: [https://github.com/jenkinsci/docker](https://github.com/jenkinsci/docker)
-> * Jenkins website: [jenkins.io](http://jenkins.io/)
+> * Jenkins website: [jenkins.io](http://jenkins.io)
 
 ## Prerequisites
 
